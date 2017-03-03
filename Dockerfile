@@ -8,3 +8,4 @@ RUN apt-get update && apt-get install -y openscad
 RUN apt-get clean && rm -rf /var/lib/apt/*
 
 COPY ./NAE/AppDef.json /etc/NAE/AppDef.json
+COPY ./NAE/screenshot.png /etc/NAE/screenshot.png
