@@ -7,17 +7,17 @@
     "Computer Aided Design"
   ],
   "machines": [
-    "n[3-9]*",
+    "n[2-9]*",
     "n[1-9][0-9]*",
     "nc[3-9]*",
-    "nc[1-9][0-9]*",
-    "ng*[3-9]"
+    "nc[1-9][0-9]*"
   ],
   "vault-types": [
     "FILE"
   ],
   "commands": {
-    "OpenSCAD": {
+    "GUI": {
+      "scale_max": 1,
       "path": "/usr/local/bin/nimbix_desktop",
       "interactive": true,
       "name": "OpenSCAD",
@@ -25,7 +25,7 @@
       "parameters": {
         "openscad": {
           "name": "openscad",
-          "description": "OpenSCAD UI",
+          "description": "OpenSCAD binary",
           "type": "CONST",
           "value": "/usr/local/bin/openscad",
           "positional": true,
