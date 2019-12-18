@@ -7,6 +7,8 @@
     "Computer Aided Design"
   ],
   "machines": [
+    "n[3-9]*",
+    "n[1-9][0-9]*",
     "nc[3-9]*",
     "nc[1-9][0-9]*",
     "ng*[3-9]"
@@ -16,11 +18,20 @@
   ],
   "commands": {
     "OpenSCAD": {
-      "path": "/usr/local/bin/nimbix_desktop /usr/local/bin/openscad",
+      "path": "/usr/local/bin/nimbix_desktop",
       "interactive": true,
       "name": "OpenSCAD",
       "description": "Run OpenSCAD directly in your browser",
-      "parameters": {}
+      "parameters": {
+        "openscad": {
+          "name": "openscad",
+          "description": "OpenSCAD UI",
+          "type": "CONST",
+          "value": "/usr/local/bin/openscad",
+          "positional": true,
+          "required": true
+        }
+      }
     }
   },
   "image": {
