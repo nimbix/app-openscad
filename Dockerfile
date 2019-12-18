@@ -25,20 +25,23 @@
 # The views and conclusions contained in the software and documentation are
 # those of the authors and should not be interpreted as representing official
 # policies, either expressed or implied, of Nimbix, Inc.
-################# Multistage Build, stage 1 ###################################
 FROM ubuntu:bionic
 LABEL maintainer="Nimbix, Inc." \
       license="BSD"
 
 # Update SERIAL_NUMBER to force rebuild of all layers (don't use cached layers)
 ARG SERIAL_NUMBER
-ENV SERIAL_NUMBER ${SERIAL_NUMBER:-20191217.1200}
+ENV SERIAL_NUMBER ${SERIAL_NUMBER:-20191218.1000}
 
 ARG OPENSCAD_VER=2019.05
 
+ARG DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /tmp
+
 # Download source and compile
 RUN apt-get -y update && \
-    apt-get -y install curl && \
+    apt-get -y install curl qt5-default && \
     curl https://files.openscad.org/openscad-$OPENSCAD_VER.src.tar.gz | tar xz && \
     cd openscad-$OPENSCAD_VER && \
     ./scripts/uni-get-dependencies.sh && \
@@ -47,30 +50,15 @@ RUN apt-get -y update && \
     make && \
     make install
 
-
-################# Multistage Build, stage 2 ###################################
-
-FROM ubuntu:bionic
-
-COPY --from=0 /usr/local/bin/openscad /usr/local/bin/openscad
-COPY --from=0 /usr/local/share/openscad /usr/local/share/openscad
-COPY --from=0 /usr/local/share/openscad /usr/local/share/openscad
-COPY --from=0 /usr/local/share/mime/packages/openscad.xml /usr/local/share/mime/packages/openscad.xml
-COPY --from=0 /usr/local/share/metainfo/org.openscad.OpenSCAD.appdata.xml /usr/local/share/metainfo/org.openscad.OpenSCAD.appdata.xml
-COPY --from=0 /usr/local/share/pixmaps/openscad.png /usr/local/share/pixmaps/openscad.png
-COPY --from=0 /usr/local/share/man/man1/openscad.1 /usr/local/share/man/man1/openscad.1
-
+# Install image-common tools and desktop
 RUN apt-get -y update && \
     apt-get -y install curl && \
     curl -H 'Cache-Control: no-cache' \
         https://raw.githubusercontent.com/nimbix/image-common/master/install-nimbix.sh \
-        | bash -s -- --setup-nimbix-desktop
-
-#RUN apt-get update && apt-get install -y software-properties-common python-software-properties
-#RUN add-apt-repository ppa:openscad/releases
-#RUN apt-get update && apt-get install -y openscad
-#
-#RUN apt-get clean && rm -rf /var/lib/apt/*
+        | bash -s -- --setup-nimbix-desktop && \
+    apt-get clean && rm -rf /var/lib/apt/*
 
 COPY NAE/AppDef.json /etc/NAE/AppDef.json
+RUN curl --fail -X POST -d @/etc/NAE/AppDef.json https://api.jarvice.com/jarvice/validate
+
 COPY NAE/screenshot.png /etc/NAE/screenshot.png
